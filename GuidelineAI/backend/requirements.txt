@@ -1,0 +1,35 @@
+uvicorn app.main:app --reload# ============================================================
+# GuidelineAI backend — requirements
+# Mirrors the libraries actually used in the source notebook:
+#   RAG_HuggingFace_all_MiniLM_L6_v2_quality_gates_with_LLM.ipynb
+# Versions are lower-bounded (not pinned exact) so pip's resolver
+# does not need to backtrack across the large transformers/torch
+# dependency graph pulled in by sentence-transformers/unstructured.
+# ============================================================
+
+# --- Web framework ---
+fastapi>=0.115
+uvicorn[standard]>=0.32
+pydantic>=2.10
+pydantic-settings>=2.7
+python-dotenv>=1.0
+python-multipart>=0.0.19
+
+# --- RAG core (same libraries as the notebook) ---
+sentence-transformers>=3.3
+transformers>=4.41,<5.0
+chromadb>=0.5
+tiktoken>=0.8
+numpy>=1.26
+pandas>=2.2
+scikit-learn>=1.5
+
+# --- PDF processing (same as the notebook: unstructured[pdf]) ---
+unstructured[pdf]>=0.16
+
+# --- LLM generation (Hugging Face Inference API, same as the notebook) ---
+huggingface_hub>=0.26
+
+# --- Testing ---
+pytest>=8.3
+httpx>=0.28

@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GuidelineAI — Clinical Answers, Grounded in Evidence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   TOKENS
+   ============================================================ */
+:root{
+  --navy-950:#070c18;
+  --navy-900:#0b1424;
+  --navy-850:#0e1830;
+  --navy-800:#121f3a;
+  --navy-700:#182948;
+  --navy-600:#22375c;
+  --line:rgba(255,255,255,0.09);
+  --line-soft:rgba(255,255,255,0.05);
+  --paper:#f4f7fb;
+  --paper-card:#ffffff;
+  --ink:#0c1526;
+  --ink-soft:#4c5876;
+  --ink-dim:#8592ab;
+  --mist:#9fb0d1;
+  --mist-dim:#6879a3;
+  --blue:#4c86ff;
+  --blue-soft:#dbe6ff;
+  --cyan:#49c9e8;
+  --teal:#25c99a;
+  --teal-soft:#d6f6ec;
+  --amber:#f0a83a;
+  --amber-soft:#fbe8c8;
+  --red:#ef5b5b;
+  --red-soft:#fbdcdc;
+  --radius-lg:20px;
+  --radius-md:14px;
+  --radius-sm:9px;
+  --font-display:'Manrope',sans-serif;
+  --font-body:'Inter',sans-serif;
+  --font-mono:'IBM Plex Mono',monospace;
+  --shadow-1:0 1px 2px rgba(9,14,29,0.06), 0 8px 24px -12px rgba(9,14,29,0.18);
+  --shadow-2:0 20px 60px -20px rgba(6,10,22,0.55);
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:var(--font-body);
+  background:var(--navy-950);
+  color:var(--mist);
+  -webkit-font-smoothing:antialiased;
+  line-height:1.5;
+}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;}
+::selection{background:rgba(76,134,255,0.35);}
+
+h1,h2,h3,h4{font-family:var(--font-display);color:#fff;margin:0;letter-spacing:-0.01em;}
+.on-light h1,.on-light h2,.on-light h3,.on-light h4{color:var(--ink);}
+
+.mono{font-family:var(--font-mono);}
+.eyebrow{
+  font-family:var(--font-mono);
+  font-size:11.5px;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  color:var(--cyan);
+  display:flex;align-items:center;gap:8px;
+}
+.eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 0 3px rgba(73,201,232,0.18);}
+
+svg{display:block;}
+.icon{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
+
+/* scrollbar (webkit) */
+::-webkit-scrollbar{width:9px;height:9px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.14);border-radius:8px;}
+.on-light ::-webkit-scrollbar-thumb{background:rgba(11,20,36,0.14);}
+
+/* ============================================================
+   VIEW SWITCHING
+   ============================================================ */
+.view{display:none;}
+.view.active{display:block;}
+
+/* ============================================================
+   LANDING — TOPBAR
+   ============================================================ */
+.landing-topbar{
+  position:sticky;top:0;z-index:50;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px clamp(20px,5vw,64px);
+  background:rgba(7,12,24,0.72);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line-soft);
+}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:700;color:#fff;font-size:16.5px;}
+.brand-mark{
+  width:30px;height:30px;border-radius:9px;
+  background:linear-gradient(150deg,#4c86ff,#25c99a 130%);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 16px -6px rgba(76,134,255,0.6);
+  position:relative;
+}
+.brand-mark::after{
+  content:"";width:9px;height:9px;border-radius:2px;background:#fff;opacity:0.92;
+  clip-path:polygon(0 0,100% 0,100% 70%,70% 70%,70% 100%,0 100%);
+}
+.landing-nav{display:flex;align-items:center;gap:30px;}
+.landing-nav .nav-links{display:flex;gap:26px;font-size:14px;color:var(--mist);}
+.landing-nav .nav-links a{transition:color .15s;}
+.landing-nav .nav-links a:hover{color:#fff;}
+.btn{
+  border:none;border-radius:11px;padding:10px 18px;font-size:14px;font-weight:600;
+  display:inline-flex;align-items:center;gap:8px;transition:transform .15s, box-shadow .15s, background .15s;
+}
+.btn:active{transform:translateY(1px);}
+.btn-primary{background:linear-gradient(135deg,#4c86ff,#3f74e8);color:#fff;box-shadow:0 10px 24px -10px rgba(76,134,255,0.65);}
+.btn-primary:hover{box-shadow:0 14px 30px -10px rgba(76,134,255,0.8);}
+.btn-ghost{background:rgba(255,255,255,0.06);color:#fff;border:1px solid var(--line);}
+.btn-ghost:hover{background:rgba(255,255,255,0.1);}
+.btn-sm{padding:8px 13px;font-size:13px;border-radius:9px;}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{
+  position:relative;overflow:hidden;
+  padding:88px clamp(20px,5vw,64px) 60px;
+  display:grid;grid-template-columns:1.05fr 0.95fr;gap:56px;align-items:center;
+  max-width:1360px;margin:0 auto;
+}
+.hero::before{
+  content:"";position:absolute;top:-260px;left:50%;transform:translateX(-46%);
+  width:900px;height:700px;border-radius:50%;
+  background:radial-gradient(circle,rgba(76,134,255,0.16),transparent 62%);
+  pointer-events:none;
+}
+.hero-copy h1{
+  font-size:clamp(34px,4.4vw,54px);line-height:1.06;font-weight:800;
+  margin-bottom:20px;max-width:12ch;
+}
+.hero-copy h1 .accent{background:linear-gradient(100deg,#7db4ff,#49c9e8 60%,#25c99a);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.hero-copy .sub{font-size:16.5px;color:var(--mist);max-width:46ch;margin:0 0 30px;line-height:1.65;}
+.hero-cta{display:flex;gap:12px;margin-bottom:34px;flex-wrap:wrap;}
+.hero-cta .btn{padding:13px 22px;font-size:14.5px;}
+.trust-strip{display:flex;gap:22px;flex-wrap:wrap;font-family:var(--font-mono);font-size:12px;color:var(--mist-dim);}
+.trust-strip span{display:flex;align-items:center;gap:7px;}
+.trust-strip .dot{width:5px;height:5px;border-radius:50%;background:var(--mist-dim);}
+
+/* Evidence chain — signature visual */
+.chain-card{
+  position:relative;border-radius:var(--radius-lg);
+  background:linear-gradient(165deg,var(--navy-850),var(--navy-900));
+  border:1px solid var(--line);
+  padding:28px 24px 30px;
+  box-shadow:var(--shadow-2);
+}
+.chain-card .chain-label{font-family:var(--font-mono);font-size:11px;color:var(--mist-dim);letter-spacing:.08em;text-transform:uppercase;margin-bottom:18px;display:flex;justify-content:space-between;}
+.chain-track{position:relative;padding:6px 0 4px;}
+.chain-line{position:absolute;top:34px;left:22px;right:22px;height:2px;background:linear-gradient(90deg,rgba(76,134,255,0.15),rgba(73,201,232,0.5),rgba(37,201,154,0.5),rgba(76,134,255,0.15));border-radius:2px;overflow:hidden;}
+.chain-line::after{
+  content:"";position:absolute;top:0;left:-30%;width:30%;height:100%;
+  background:linear-gradient(90deg,transparent,#fff,transparent);
+  animation:travel 3.2s linear infinite;
+}
+@keyframes travel{0%{left:-30%;}100%{left:100%;}}
+.chain-nodes{display:flex;justify-content:space-between;position:relative;z-index:2;}
+.chain-node{display:flex;flex-direction:column;align-items:center;gap:10px;width:64px;}
+.chain-node .dot{
+  width:44px;height:44px;border-radius:13px;
+  background:var(--navy-800);border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;color:var(--cyan);
+  transition:transform .3s;
+}
+.chain-node:nth-child(1) .dot{color:#a7bfff;}
+.chain-node:nth-child(2) .dot{color:var(--cyan);}
+.chain-node:nth-child(3) .dot{color:#8ee0d1;}
+.chain-node:nth-child(4) .dot{color:var(--teal);}
+.chain-node:nth-child(5) .dot{color:var(--amber);}
+.chain-node span{font-family:var(--font-mono);font-size:10.5px;color:var(--mist-dim);text-align:center;}
+.chain-card .snippet{
+  margin-top:26px;padding:14px 16px;border-radius:11px;
+  background:rgba(37,201,154,0.07);border:1px solid rgba(37,201,154,0.25);
+  font-family:var(--font-mono);font-size:12.2px;color:#bfeee0;line-height:1.6;
+}
+.chain-card .snippet b{color:#fff;font-weight:600;}
+.floaters{position:absolute;inset:0;pointer-events:none;}
+.floaters i{
+  position:absolute;width:5px;height:5px;border-radius:50%;background:var(--cyan);opacity:.55;
+  animation:float 6s ease-in-out infinite;
+}
+@keyframes float{0%,100%{transform:translateY(0);opacity:.25;}50%{transform:translateY(-14px);opacity:.75;}}
+
+/* ============================================================
+   SECTION SHELL
+   ============================================================ */
+.section{padding:80px clamp(20px,5vw,64px);max-width:1280px;margin:0 auto;}
+.section-head{max-width:640px;margin-bottom:44px;}
+.section-head h2{font-size:clamp(24px,2.6vw,32px);margin:12px 0 12px;}
+.section-head p{color:var(--mist);font-size:15px;line-height:1.7;}
+
+/* how it works */
+.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative;}
+.flow::before{content:"";position:absolute;top:29px;left:6%;right:6%;height:1px;background:repeating-linear-gradient(90deg,rgba(255,255,255,0.16) 0 8px,transparent 8px 16px);}
+.flow-step{position:relative;padding:0 18px 0 0;}
+.flow-step .num{
+  font-family:var(--font-mono);font-size:12px;color:var(--navy-950);font-weight:600;
+  width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#7db4ff,#49c9e8);margin-bottom:20px;position:relative;z-index:2;
+}
+.flow-step:nth-child(3) .num{background:linear-gradient(135deg,#49c9e8,#25c99a);}
+.flow-step:nth-child(4) .num{background:linear-gradient(135deg,#25c99a,#f0a83a);}
+.flow-step h4{font-size:16px;margin-bottom:8px;}
+.flow-step p{font-size:13.5px;color:var(--mist-dim);line-height:1.6;margin:0;}
+
+/* refusal teaser + principles */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:start;}
+.mini-refusal{
+  border-radius:var(--radius-lg);padding:26px 24px;
+  background:linear-gradient(165deg,rgba(240,168,58,0.09),rgba(11,20,36,0.4));
+  border:1px solid rgba(240,168,58,0.28);
+}
+.mini-refusal .tag{
+  display:inline-flex;align-items:center;gap:7px;font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;
+  color:var(--amber);background:rgba(240,168,58,0.14);padding:5px 10px;border-radius:100px;margin-bottom:14px;text-transform:uppercase;
+}
+.mini-refusal h4{font-size:18px;margin-bottom:8px;color:#fff;}
+.mini-refusal p{font-size:14px;color:var(--mist);line-height:1.65;margin:0 0 16px;}
+.mini-refusal ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;}
+.mini-refusal li{font-size:13px;color:var(--mist-dim);display:flex;gap:9px;align-items:flex-start;}
+.mini-refusal li svg{color:var(--amber);margin-top:2px;}
+
+.principles{display:flex;flex-direction:column;gap:18px;}
+.principle{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--line-soft);}
+.principle:last-child{border-bottom:none;}
+.principle .ic{
+  width:36px;height:36px;border-radius:10px;background:var(--navy-800);border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;color:var(--cyan);flex-shrink:0;
+}
+.principle h5{color:#fff;font-family:var(--font-display);font-size:14.5px;margin:0 0 4px;font-weight:700;}
+.principle p{margin:0;font-size:13px;color:var(--mist-dim);line-height:1.6;}
+
+.footer-cta{
+  text-align:center;padding:80px clamp(20px,5vw,64px) 100px;
+}
+.footer-cta h2{font-size:clamp(24px,3vw,36px);margin-bottom:16px;}
+.footer-cta p{color:var(--mist);margin-bottom:28px;}
+.site-footer{border-top:1px solid var(--line-soft);padding:26px clamp(20px,5vw,64px);display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--mist-dim);font-family:var(--font-mono);}
+
+@media(max-width:980px){
+  .hero{grid-template-columns:1fr;padding-top:56px;}
+  .landing-nav .nav-links{display:none;}
+  .flow{grid-template-columns:1fr 1fr;row-gap:34px;}
+  .flow::before{display:none;}
+  .two-col{grid-template-columns:1fr;}
+}
+
+/* ============================================================
+   APP SHELL
+   ============================================================ */
+#view-app{background:var(--paper);color:var(--ink);min-height:100vh;}
+.app-shell{display:grid;grid-template-columns:252px 1fr;min-height:100vh;}
+.sidebar{
+  background:var(--navy-950);color:var(--mist);
+  padding:20px 16px;display:flex;flex-direction:column;gap:22px;
+  position:sticky;top:0;height:100vh;overflow-y:auto;
+}
+.sidebar-brand{display:flex;align-items:center;gap:10px;padding:4px 6px 8px;cursor:pointer;}
+.sidebar-brand .brand{font-size:15px;}
+.new-q-btn{
+  width:100%;border:1px dashed rgba(255,255,255,0.22);background:rgba(255,255,255,0.04);
+  color:#fff;border-radius:12px;padding:11px 14px;font-size:13.5px;font-weight:600;
+  display:flex;align-items:center;gap:9px;transition:background .15s,border-color .15s;
+}
+.new-q-btn:hover{background:rgba(76,134,255,0.14);border-color:rgba(76,134,255,0.45);}
+.side-group{display:flex;flex-direction:column;gap:3px;}
+.side-label{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--mist-dim);padding:8px 10px 4px;}
+.side-link{
+  display:flex;align-items:center;gap:11px;padding:9px 10px;border-radius:9px;font-size:13.5px;color:var(--mist);
+  transition:background .15s,color .15s;
+}
+.side-link svg{color:var(--mist-dim);}
+.side-link:hover{background:rgba(255,255,255,0.05);color:#fff;}
+.side-link.active{background:rgba(76,134,255,0.16);color:#fff;}
+.side-link.active svg{color:var(--cyan);}
+.recent-item{
+  display:flex;flex-direction:column;gap:3px;padding:8px 10px;border-radius:9px;cursor:pointer;
+}
+.recent-item:hover{background:rgba(255,255,255,0.05);}
+.recent-item .rq-text{font-size:12.5px;color:var(--mist);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.recent-item .rq-meta{display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:10px;color:var(--mist-dim);}
+.rq-dot{width:6px;height:6px;border-radius:50%;}
+.rq-dot.ok{background:var(--teal);}
+.rq-dot.warn{background:var(--amber);}
+.rq-dot.stop{background:var(--red);}
+.sidebar-bottom{margin-top:auto;display:flex;flex-direction:column;gap:3px;border-top:1px solid var(--line-soft);padding-top:14px;}
+
+.main{padding:26px clamp(18px,3vw,42px) 60px;}
+.app-topline{display:flex;justify-content:space-between;align-items:center;margin-bottom:26px;}
+.app-topline .status-chip{
+  display:flex;align-items:center;gap:7px;font-family:var(--font-mono);font-size:11.5px;color:#2a9c78;
+  background:var(--teal-soft);padding:6px 12px;border-radius:100px;font-weight:600;
+}
+.status-chip .pulse{width:7px;height:7px;border-radius:50%;background:#2a9c78;position:relative;}
+.status-chip .pulse::after{content:"";position:absolute;inset:-5px;border-radius:50%;background:#2a9c78;opacity:.35;animation:pulse 2s infinite;}
+@keyframes pulse{0%{transform:scale(0.6);opacity:.45;}100%{transform:scale(2.1);opacity:0;}}
+
+/* Ask subview */
+.subview{display:none;}
+.subview.active{display:block;}
+.ask-hero{max-width:760px;margin:10px auto 30px;text-align:center;}
+.ask-hero h2{font-size:clamp(22px,3vw,30px);margin-bottom:8px;}
+.ask-hero p{color:var(--ink-soft);font-size:14.5px;}
+.ask-box{
+  max-width:760px;margin:0 auto 18px;background:var(--paper-card);border:1px solid #e4e9f2;
+  border-radius:18px;padding:8px 8px 8px 20px;box-shadow:var(--shadow-1);
+  display:flex;align-items:flex-end;gap:10px;
+}
+.ask-box textarea{
+  flex:1;border:none;outline:none;resize:none;font-family:var(--font-body);font-size:15px;
+  padding:14px 0;color:var(--ink);background:transparent;min-height:26px;max-height:140px;
+}
+.ask-box textarea::placeholder{color:#a6b0c4;}
+.ask-send{
+  width:42px;height:42px;border-radius:12px;border:none;background:var(--navy-950);color:#fff;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;margin:6px 6px 6px 0;
+  transition:background .15s,transform .15s;
+}
+.ask-send:hover{background:var(--blue);}
+.ask-send:disabled{background:#c7cede;}
+.ask-shortcut{max-width:760px;margin:0 auto 26px;display:flex;justify-content:flex-end;font-family:var(--font-mono);font-size:11px;color:#a6b0c4;padding-right:6px;}
+kbd{background:#eef1f7;border:1px solid #dbe1ec;border-radius:5px;padding:1px 6px;font-family:var(--font-mono);}
+.chips{max-width:760px;margin:0 auto 46px;display:flex;flex-wrap:wrap;gap:9px;justify-content:center;}
+.chip{
+  border:1px solid #e0e6f0;background:#fff;color:var(--ink-soft);padding:9px 14px;border-radius:100px;
+  font-size:13px;transition:border-color .15s,color .15s,transform .15s;
+}
+.chip:hover{border-color:var(--blue);color:var(--blue);transform:translateY(-1px);}
+
+.idle-state{max-width:520px;margin:36px auto;text-align:center;opacity:.85;}
+.idle-chain{display:flex;justify-content:center;gap:14px;margin-bottom:18px;}
+.idle-chain .idot{width:34px;height:34px;border-radius:10px;background:#fff;border:1px solid #e4e9f2;display:flex;align-items:center;justify-content:center;color:#aeb8cc;}
+.idle-state p{font-size:13.5px;color:#a6b0c4;}
+
+/* loading sequence */
+.loading-block{max-width:560px;margin:30px auto;display:none;}
+.loading-block.show{display:block;}
+.loading-row{display:flex;align-items:center;gap:12px;padding:10px 4px;font-size:13.5px;color:#a6b0c4;}
+.loading-row.active{color:var(--ink);}
+.spinner{width:16px;height:16px;border-radius:50%;border:2px solid #dfe4ee;border-top-color:var(--blue);animation:spin .8s linear infinite;flex-shrink:0;}
+.check-ic{color:var(--teal);}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* results layout */
+.result-wrap{display:none;max-width:1080px;margin:0 auto;grid-template-columns:1fr 340px;gap:26px;align-items:start;}
+.result-wrap.show{display:grid;}
+.answer-card{background:var(--paper-card);border-radius:var(--radius-lg);border:1px solid #e4e9f2;box-shadow:var(--shadow-1);overflow:hidden;}
+.answer-card .q-line{padding:18px 24px;border-bottom:1px solid #eef1f7;font-size:13px;color:#8592ab;font-family:var(--font-mono);}
+.answer-card .q-line b{color:var(--ink);font-family:var(--font-body);font-weight:600;font-size:14.5px;}
+.answer-body{padding:22px 24px 8px;}
+.answer-body .resp-label{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.resp-label .lbl{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8592ab;}
+.confidence-pill{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;padding:5px 12px;border-radius:100px;font-family:var(--font-mono);}
+.confidence-pill.sufficient{background:var(--teal-soft);color:#1c8f6d;}
+.confidence-pill.insufficient{background:var(--amber-soft);color:#a06716;}
+.answer-text{font-size:15.2px;color:#243049;line-height:1.75;margin:0 0 18px;}
+.answer-text b{color:var(--ink);}
+
+.details-toggle{
+  display:flex;align-items:center;gap:8px;padding:14px 24px;border-top:1px solid #eef1f7;
+  font-size:13px;color:#5a6784;font-weight:600;cursor:pointer;user-select:none;
+}
+.details-toggle svg{transition:transform .2s;}
+.details-toggle.open svg{transform:rotate(180deg);}
+.retrieval-panel{display:none;padding:0 24px 22px;}
+.retrieval-panel.open{display:block;}
+.retrieval-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:6px;}
+.retrieval-grid .rg-item{background:#f7f9fc;border:1px solid #eef1f7;border-radius:10px;padding:10px 12px;}
+.retrieval-grid .rg-item .rg-val{font-family:var(--font-mono);font-size:15px;font-weight:600;color:var(--ink);}
+.retrieval-grid .rg-item .rg-key{font-size:10.5px;color:#98a3ba;text-transform:uppercase;letter-spacing:.06em;margin-top:2px;}
+
+/* evidence drawer */
+.evidence-panel{background:var(--paper-card);border:1px solid #e4e9f2;border-radius:var(--radius-lg);box-shadow:var(--shadow-1);padding:18px;position:sticky;top:20px;}
+.evidence-panel h4{font-size:14.5px;margin-bottom:2px;}
+.evidence-panel .ep-sub{font-size:12px;color:#98a3ba;margin-bottom:16px;font-family:var(--font-mono);}
+.ev-card{border:1px solid #eef1f7;border-radius:12px;padding:13px 14px;margin-bottom:10px;transition:border-color .15s;cursor:pointer;}
+.ev-card:hover{border-color:#c9d5ee;}
+.ev-card .ev-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:7px;gap:8px;}
+.ev-card .ev-section{font-size:12.5px;font-weight:600;color:var(--ink);}
+.ev-card .ev-page{font-family:var(--font-mono);font-size:10.5px;color:#98a3ba;white-space:nowrap;}
+.ev-score{display:flex;align-items:center;gap:6px;margin-bottom:8px;}
+.ev-score-bar{flex:1;height:4px;border-radius:3px;background:#eef1f7;overflow:hidden;}
+.ev-score-bar span{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--teal));}
+.ev-score-val{font-family:var(--font-mono);font-size:10.5px;color:#5a6784;}
+.ev-text{font-size:12.3px;color:#6b7793;line-height:1.6;max-height:38px;overflow:hidden;transition:max-height .25s;}
+.ev-card.expanded .ev-text{max-height:400px;}
+.ev-expand-hint{font-size:10.5px;color:#a6b0c4;margin-top:6px;font-family:var(--font-mono);}
+
+/* refusal card */
+.refusal-card{border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-1);border:1px solid #f1dfb8;background:linear-gradient(180deg,#fffaf0,#ffffff 140px);}
+.refusal-card.severe{border-color:#f3c9c9;background:linear-gradient(180deg,#fdf3f3,#ffffff 140px);}
+.refusal-card .q-line{padding:18px 24px;border-bottom:1px solid rgba(0,0,0,0.05);font-size:13px;color:#8592ab;font-family:var(--font-mono);}
+.refusal-card .q-line b{color:var(--ink);font-family:var(--font-body);font-weight:600;font-size:14.5px;}
+.refusal-head{padding:22px 24px 6px;display:flex;gap:14px;}
+.refusal-head .ric{
+  width:38px;height:38px;border-radius:11px;background:var(--amber-soft);color:#a06716;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.refusal-card.severe .ric{background:var(--red-soft);color:#c23a3a;}
+.refusal-head h3{font-size:17.5px;color:var(--ink);margin-bottom:5px;}
+.refusal-head p{font-size:14px;color:#5a6784;line-height:1.65;margin:0;}
+.refusal-body{padding:6px 24px 22px;}
+.refusal-block{margin-top:16px;}
+.refusal-block .rb-title{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:#98a3ba;margin-bottom:9px;}
+.refusal-block ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;}
+.refusal-block li{display:flex;gap:9px;align-items:flex-start;font-size:13.5px;color:#3d4863;}
+.refusal-block li svg{color:#c99a3a;margin-top:2px;flex-shrink:0;}
+.refusal-card.severe .refusal-block li svg{color:#c23a3a;}
+.next-step-box{margin-top:16px;background:#f7f9fc;border:1px solid #eef1f7;border-radius:12px;padding:14px 16px;}
+.next-step-box .ns-label{font-family:var(--font-mono);font-size:11px;color:#5a6784;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;}
+.next-step-box p{margin:0;font-size:13.5px;color:#243049;line-height:1.6;}
+
+@media(max-width:980px){
+  .app-shell{grid-template-columns:1fr;}
+  .sidebar{position:fixed;bottom:0;left:0;right:0;top:auto;height:auto;flex-direction:row;
+    padding:8px 6px;overflow-x:auto;z-index:60;border-top:1px solid rgba(255,255,255,0.08);gap:4px;}
+  .sidebar-brand,.new-q-btn,.side-label,.sidebar-bottom,#recent-list{display:none;}
+  .side-group{flex-direction:row;flex:1;justify-content:space-around;}
+  .side-link{flex-direction:column;gap:4px;font-size:10px;padding:7px 8px;}
+  .main{padding-bottom:90px;}
+  .result-wrap{grid-template-columns:1fr;}
+  .evidence-panel{position:static;}
+  .retrieval-grid{grid-template-columns:repeat(2,1fr);}
+}
+
+/* ============================================================
+   GUIDELINE PAGE
+   ============================================================ */
+.page-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:26px;gap:20px;flex-wrap:wrap;}
+.page-head h2{font-size:24px;margin-bottom:6px;}
+.page-head .ph-sub{font-size:13.5px;color:#8592ab;}
+.card-surface{background:var(--paper-card);border:1px solid #e4e9f2;border-radius:var(--radius-lg);box-shadow:var(--shadow-1);}
+.gl-top{padding:26px;display:grid;grid-template-columns:1.3fr 1fr;gap:26px;}
+.gl-info{display:flex;flex-direction:column;gap:16px;}
+.gl-info-row{display:flex;justify-content:space-between;font-size:13.5px;padding:10px 0;border-bottom:1px solid #f1f3f8;}
+.gl-info-row:last-child{border-bottom:none;}
+.gl-info-row .k{color:#8592ab;}
+.gl-info-row .v{color:var(--ink);font-weight:600;font-family:var(--font-mono);font-size:13px;}
+.badge-live{display:inline-flex;align-items:center;gap:6px;background:var(--teal-soft);color:#1c8f6d;font-family:var(--font-mono);font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:100px;}
+
+.pipeline-mini{background:var(--navy-950);border-radius:16px;padding:22px 18px;display:flex;flex-direction:column;justify-content:center;}
+.pipeline-mini .pm-label{font-family:var(--font-mono);font-size:10.5px;color:var(--mist-dim);text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px;}
+.pm-row{display:flex;align-items:center;}
+.pm-node{display:flex;flex-direction:column;align-items:center;gap:8px;flex:1;}
+.pm-node .pd{width:38px;height:38px;border-radius:11px;background:var(--navy-800);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--cyan);}
+.pm-node span{font-family:var(--font-mono);font-size:9.5px;color:var(--mist-dim);text-align:center;}
+.pm-arrow{color:var(--mist-dim);flex-shrink:0;width:16px;}
+
+.sections-card{margin-top:22px;padding:22px 26px;}
+.sections-card h4{font-size:14.5px;margin-bottom:14px;}
+.sec-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid #f1f3f8;font-size:13.5px;}
+.sec-row:last-child{border-bottom:none;}
+.sec-row .sec-name{color:var(--ink);}
+.sec-row .sec-count{font-family:var(--font-mono);color:#8592ab;font-size:12px;}
+
+.advanced-toggle{
+  margin-top:18px;display:flex;align-items:center;gap:8px;font-size:13px;color:#5a6784;font-weight:600;cursor:pointer;
+}
+.advanced-toggle svg{transition:transform .2s;}
+.advanced-toggle.open svg{transform:rotate(180deg);}
+.advanced-panel{display:none;margin-top:14px;}
+.advanced-panel.open{display:block;}
+.adv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.adv-item{background:#f7f9fc;border:1px solid #eef1f7;border-radius:10px;padding:12px 14px;}
+.adv-item .k{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:#98a3ba;margin-bottom:5px;}
+.adv-item .v{font-family:var(--font-mono);font-size:13px;color:var(--ink);font-weight:600;}
+@media(max-width:900px){.gl-top{grid-template-columns:1fr;}.adv-grid{grid-template-columns:1fr 1fr;}}
+
+/* ============================================================
+   STATUS PAGE
+   ============================================================ */
+.status-list{display:flex;flex-direction:column;}
+.status-row{display:flex;align-items:center;gap:16px;padding:20px 26px;border-bottom:1px solid #f1f3f8;}
+.status-row:last-child{border-bottom:none;}
+.status-dot{width:11px;height:11px;border-radius:50%;background:var(--teal);position:relative;flex-shrink:0;}
+.status-dot::after{content:"";position:absolute;inset:-6px;border-radius:50%;background:var(--teal);opacity:.25;animation:pulse 2.2s infinite;}
+.status-row .sr-title{font-size:14.5px;font-weight:600;color:var(--ink);margin-bottom:2px;}
+.status-row .sr-sub{font-size:12.5px;color:#8592ab;}
+.status-row .sr-time{margin-left:auto;font-family:var(--font-mono);font-size:11.5px;color:#a6b0c4;white-space:nowrap;}
+
+/* ============================================================
+   ANALYTICS
+   ============================================================ */
+.stat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:24px;}
+.stat-card{background:var(--paper-card);border:1px solid #e4e9f2;border-radius:16px;padding:18px 18px;box-shadow:var(--shadow-1);}
+.stat-card .sc-label{font-size:11.5px;color:#8592ab;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em;}
+.stat-card .sc-val{font-family:var(--font-display);font-size:26px;font-weight:800;color:var(--ink);}
+.stat-card .sc-delta{font-family:var(--font-mono);font-size:11px;margin-top:6px;}
+.sc-delta.up{color:#1c8f6d;}
+.sc-delta.warn{color:#a06716;}
+
+.chart-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:18px;margin-bottom:18px;}
+.chart-card{background:var(--paper-card);border:1px solid #e4e9f2;border-radius:16px;padding:22px;box-shadow:var(--shadow-1);}
+.chart-card h4{font-size:14px;margin-bottom:2px;}
+.chart-card .cc-sub{font-size:11.5px;color:#98a3ba;margin-bottom:18px;font-family:var(--font-mono);}
+.trend-svg{width:100%;height:150px;}
+.donut-wrap{display:flex;align-items:center;gap:22px;}
+.donut{width:120px;height:120px;border-radius:50%;flex-shrink:0;
+  background:conic-gradient(var(--teal) 0% 69%, var(--amber) 69% 100%);
+  position:relative;
+}
+.donut::after{content:"";position:absolute;inset:16px;background:var(--paper-card);border-radius:50%;display:flex;}
+.donut-legend{display:flex;flex-direction:column;gap:10px;}
+.dl-item{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--ink);}
+.dl-item .sw{width:10px;height:10px;border-radius:3px;}
+.dl-item small{color:#98a3ba;font-family:var(--font-mono);font-size:11px;margin-left:auto;padding-left:12px;}
+
+.hist{display:flex;align-items:flex-end;gap:8px;height:120px;}
+.hist .hbar{flex:1;background:linear-gradient(180deg,var(--cyan),var(--blue));border-radius:5px 5px 2px 2px;position:relative;}
+.hist .hbar span{position:absolute;bottom:-18px;left:0;right:0;text-align:center;font-family:var(--font-mono);font-size:9.5px;color:#98a3ba;}
+
+.reason-bars{display:flex;flex-direction:column;gap:14px;}
+.reason-row .rr-top{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:6px;}
+.reason-row .rr-top .rr-name{color:var(--ink);}
+.reason-row .rr-top .rr-pct{font-family:var(--font-mono);color:#8592ab;}
+.rr-track{height:7px;border-radius:5px;background:#eef1f7;overflow:hidden;}
+.rr-track span{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,var(--amber),#e88a3a);}
+
+.eval-table{width:100%;border-collapse:collapse;font-size:13px;}
+.eval-table th{text-align:left;font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:#98a3ba;padding:0 12px 10px;font-weight:500;}
+.eval-table td{padding:11px 12px;border-top:1px solid #f1f3f8;color:var(--ink);}
+.eval-table tr.final td{background:rgba(37,201,154,0.06);font-weight:600;}
+.eval-table .mono-cell{font-family:var(--font-mono);color:#5a6784;}
+.tag-final{background:var(--teal-soft);color:#1c8f6d;font-family:var(--font-mono);font-size:10px;padding:2px 8px;border-radius:100px;font-weight:600;}
+
+@media(max-width:1100px){.stat-grid{grid-template-columns:repeat(2,1fr);}.chart-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     LANDING VIEW
+     ============================================================ -->
+<div class="view active" id="view-landing">
+
+  <div class="landing-topbar">
+    <div class="brand"><span class="brand-mark"></span>GuidelineAI</div>
+    <div class="landing-nav">
+      <div class="nav-links">
+        <a href="#how-it-works">How it works</a>
+        <a href="#refusal-teaser">Evidence boundaries</a>
+        <a href="#principles">Principles</a>
+      </div>
+      <button class="btn btn-primary" onclick="enterApp()">Try GuidelineAI</button>
+    </div>
+  </div>
+
+  <section class="hero">
+    <div class="floaters" aria-hidden="true">
+      <i style="top:12%;left:8%;animation-delay:0s;"></i>
+      <i style="top:60%;left:2%;animation-delay:1.4s;"></i>
+      <i style="top:30%;left:46%;animation-delay:2.6s;"></i>
+    </div>
+    <div class="hero-copy">
+      <div class="eyebrow" style="margin-bottom:18px;">EVIDENCE-FIRST CLINICAL RETRIEVAL</div>
+      <h1>Clinical Answers, <span class="accent">Grounded in Evidence.</span></h1>
+      <p class="sub">Search clinical guidelines with an evidence-first AI system designed to retrieve relevant guidance, evaluate evidence strength, and refuse when the indexed evidence is not sufficient.</p>
+      <div class="hero-cta">
+        <button class="btn btn-primary" onclick="enterApp()">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          Try GuidelineAI
+        </button>
+        <a href="#how-it-works" class="btn btn-ghost">How it works</a>
+      </div>
+      <div class="trust-strip">
+        <span><i class="dot"></i>NICE NG136 — Hypertension in adults</span>
+        <span><i class="dot"></i>all-MiniLM-L6-v2 embeddings</span>
+        <span><i class="dot"></i>Chroma vector retrieval</span>
+      </div>
+    </div>
+
+    <div class="chain-card">
+      <div class="chain-label"><span>EVIDENCE PIPELINE</span><span>live preview</span></div>
+      <div class="chain-track">
+        <div class="chain-line"></div>
+        <div class="chain-nodes">
+          <div class="chain-node"><div class="dot"><svg class="icon" viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6z"/><path d="M15 2v5h5"/></svg></div><span>PDF</span></div>
+          <div class="chain-node"><div class="dot"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="7" height="7" rx="1.5"/><rect x="14" y="4" width="7" height="7" rx="1.5"/><rect x="8.5" y="14" width="7" height="7" rx="1.5"/></svg></div><span>Chunks</span></div>
+          <div class="chain-node"><div class="dot"><svg class="icon" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.2"/><circle cx="18" cy="7" r="2.2"/><circle cx="10" cy="17" r="2.2"/><path d="M7.8 7.2 16.2 6.8M8.2 8.8l1.4 6.4M16.6 8.6l-5 6.6"/></svg></div><span>Embeddings</span></div>
+          <div class="chain-node"><div class="dot"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></div><span>Retrieval</span></div>
+          <div class="chain-node"><div class="dot"><svg class="icon" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></div><span>Evidence</span></div>
+        </div>
+      </div>
+      <div class="snippet">
+        <b>Section 1.5</b> · pages 24–24 · similarity <b>91%</b><br>
+        "…severe hypertension (≥180/120 mmHg) with no red-flag symptoms → assess for target organ damage before deciding on same-day referral…"
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="how-it-works">
+    <div class="section-head">
+      <div class="eyebrow">THE PIPELINE</div>
+      <h2>Four steps, in order, every time.</h2>
+      <p>Every answer moves through the same evidence pipeline — nothing is generated without first being retrieved and evaluated.</p>
+    </div>
+    <div class="flow">
+      <div class="flow-step"><div class="num">01</div><h4>Ask</h4><p>You enter a clinical guideline question in plain language.</p></div>
+      <div class="flow-step"><div class="num">02</div><h4>Retrieve</h4><p>The system searches the indexed guideline using semantic embeddings.</p></div>
+      <div class="flow-step"><div class="num">03</div><h4>Evaluate</h4><p>Retrieved evidence is scored for relevance and checked against safety gates.</p></div>
+      <div class="flow-step"><div class="num">04</div><h4>Answer or Refuse</h4><p>The system answers when evidence is sufficient, and refuses openly when it isn't.</p></div>
+    </div>
+  </section>
+
+  <section class="section" id="refusal-teaser">
+    <div class="two-col">
+      <div>
+        <div class="eyebrow">REFUSAL AS A FEATURE</div>
+        <h2 style="margin:12px 0 14px;font-size:26px;">Refusal isn't an error state. It's the product working correctly.</h2>
+        <p style="font-size:14.5px;color:var(--mist);line-height:1.75;margin-bottom:20px;">When retrieval is weak, when a question falls outside the indexed guideline's scope, or when a safety gate trips, GuidelineAI says so plainly instead of guessing. Every refusal explains what was searched and what to try next.</p>
+        <a class="btn btn-ghost" onclick="enterApp('ask')" style="cursor:pointer;">See a refusal in the app →</a>
+      </div>
+      <div class="mini-refusal">
+        <span class="tag">Evidence boundary reached</span>
+        <h4>I couldn't find enough information in the indexed guideline to answer this confidently.</h4>
+        <p>This is a preview of how GuidelineAI communicates a boundary — calm, specific, and never disguised as a system error.</p>
+        <ul>
+          <li><svg class="icon" viewBox="0 0 24 24" width="14" height="14"><path d="M12 9v4M12 17h.01M10.3 3.86 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.86a2 2 0 0 0-3.4 0z"/></svg>Retrieval similarity insufficient</li>
+          <li><svg class="icon" viewBox="0 0 24 24" width="14" height="14"><path d="M12 9v4M12 17h.01M10.3 3.86 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.86a2 2 0 0 0-3.4 0z"/></svg>Exact dose not supported by the retrieved text</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="principles">
+    <div class="section-head">
+      <div class="eyebrow">PRODUCT PRINCIPLES</div>
+      <h2>Built to be trustworthy first.</h2>
+    </div>
+    <div class="principles" style="display:grid;grid-template-columns:1fr 1fr;gap:0 40px;">
+      <div class="principle"><div class="ic"><svg class="icon" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></div><div><h5>Evidence-first</h5><p>Nothing is answered that wasn't first retrieved from the indexed guideline.</p></div></div>
+      <div class="principle"><div class="ic"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/></svg></div><div><h5>Source evidence is inspectable</h5><p>Every claim links back to a section, page range, and similarity score.</p></div></div>
+      <div class="principle"><div class="ic"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3l8 4v5c0 5-3.5 8.5-8 9-4.5-.5-8-4-8-9V7z"/></svg></div><div><h5>Refusal over guessing</h5><p>The system declines rather than presenting unsupported information as guideline content.</p></div></div>
+      <div class="principle"><div class="ic"><svg class="icon" viewBox="0 0 24 24"><path d="M4 19V5a2 2 0 0 1 2-2h9l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 13h8M8 17h5"/></svg></div><div><h5>Technical detail, on request</h5><p>Retrieval internals stay out of the way — until you want to inspect them.</p></div></div>
+    </div>
+  </section>
+
+  <section class="footer-cta">
+    <h2>See how the evidence pipeline holds up.</h2>
+    <p>Ask a question against the indexed NICE hypertension guideline.</p>
+    <button class="btn btn-primary" onclick="enterApp()" style="padding:14px 26px;font-size:15px;">Try GuidelineAI</button>
+  </section>
+
+  <div class="site-footer">
+    <span>GuidelineAI · evidence-grounded retrieval, not a general medical chatbot</span>
+    <span>Portfolio build · RAG evaluation project</span>
+  </div>
+</div>
+
+<!-- ============================================================
+     APP VIEW
+     ============================================================ -->
+<div class="view" id="view-app">
+  <div class="app-shell">
+
+    <aside class="sidebar">
+      <div class="sidebar-brand" onclick="backToLanding()">
+        <span class="brand-mark" style="width:26px;height:26px;"></span>
+        <span class="brand">GuidelineAI</span>
+      </div>
+
+      <button class="new-q-btn" onclick="newQuestion()">
+        <svg class="icon" viewBox="0 0 24 24" width="15" height="15"><path d="M12 5v14M5 12h14"/></svg>
+        New question
+      </button>
+
+      <div class="side-group">
+        <div class="side-label">Workspace</div>
+        <a class="side-link active" data-sub="ask" onclick="showSub('ask')">
+          <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>Ask
+        </a>
+        <a class="side-link" data-sub="guideline" onclick="showSub('guideline')">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6z"/><path d="M15 2v5h5"/></svg>Guideline
+        </a>
+        <a class="side-link" data-sub="status" onclick="showSub('status')">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>System status
+        </a>
+        <a class="side-link" data-sub="analytics" onclick="showSub('analytics')">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="8" width="3" height="10"/><rect x="17" y="5" width="3" height="13"/></svg>Analytics
+        </a>
+      </div>
+
+      <div class="side-group" id="recent-list">
+        <div class="side-label">Recent questions</div>
+        <!-- injected -->
+      </div>
+
+      <div class="sidebar-bottom">
+        <a class="side-link"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 0 1-4 0v-.09A1.7 1.7 0 0 0 9 19.4a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.55-1H3a2 2 0 0 1 0-4h.09A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.55V3a2 2 0 0 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9a1.7 1.7 0 0 0 1.55 1H21a2 2 0 0 1 0 4h-.09a1.7 1.7 0 0 0-1.51 1z"/></svg>Settings</a>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="app-topline">
+        <div></div>
+        <div class="status-chip"><span class="pulse"></span>All systems ready</div>
+      </div>
+
+      <!-- ASK SUBVIEW -->
+      <section class="subview active" id="sub-ask">
+        <div class="ask-hero">
+          <h2>Ask the indexed guideline</h2>
+          <p>Answers are grounded in NICE NG136 — Hypertension in adults: diagnosis and management.</p>
+        </div>
+        <div class="ask-box">
+          <textarea id="ask-input" rows="1" placeholder="Ask a question about the indexed clinical guideline..." oninput="autogrow(this)" onkeydown="handleAskKey(event)"></textarea>
+          <button class="ask-send" id="ask-send" onclick="submitQuestion()">
+            <svg class="icon" viewBox="0 0 24 24" width="17" height="17" stroke="white"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>
+          </button>
+        </div>
+        <div class="ask-shortcut"><kbd>⌘</kbd>+<kbd>Enter</kbd> to ask</div>
+
+        <div class="chips">
+          <button class="chip" onclick="askChip(this)">When should a patient be referred for same-day specialist review?</button>
+          <button class="chip" onclick="askChip(this)">What does the guideline recommend for resistant hypertension?</button>
+          <button class="chip" onclick="askChip(this)">What are the treatment steps?</button>
+          <button class="chip" onclick="askChip(this)">What blood pressure target applies to a 6-year-old with hypertension?</button>
+        </div>
+
+        <div class="idle-state" id="idle-state">
+          <div class="idle-chain">
+            <div class="idot"><svg class="icon" viewBox="0 0 24 24" width="16" height="16"><path d="M6 2h9l5 5v15H6z"/><path d="M15 2v5h5"/></svg></div>
+            <div class="idot"><svg class="icon" viewBox="0 0 24 24" width="16" height="16"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></div>
+            <div class="idot"><svg class="icon" viewBox="0 0 24 24" width="16" height="16"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></div>
+          </div>
+          <p>Nothing retrieved yet — ask a question above or try one of the suggestions.</p>
+        </div>
+
+        <div class="loading-block" id="loading-block">
+          <div class="loading-row active" id="lr-1"><div class="spinner"></div>Searching the indexed guideline…</div>
+          <div class="loading-row" id="lr-2"><div class="spinner"></div>Evaluating retrieved evidence…</div>
+          <div class="loading-row" id="lr-3"><div class="spinner"></div>Preparing evidence-grounded response…</div>
+        </div>
+
+        <div class="result-wrap" id="result-wrap">
+          <div id="answer-slot"></div>
+          <div class="evidence-panel" id="evidence-slot"></div>
+        </div>
+      </section>
+
+      <!-- GUIDELINE SUBVIEW -->
+      <section class="subview" id="sub-guideline">
+        <div class="page-head">
+          <div>
+            <h2>Indexed Guideline</h2>
+            <div class="ph-sub">One guideline currently indexed for retrieval</div>
+          </div>
+          <span class="badge-live"><span style="width:6px;height:6px;border-radius:50%;background:#1c8f6d;"></span>Indexed &amp; live</span>
+        </div>
+
+        <div class="card-surface gl-top">
+          <div class="gl-info">
+            <h3 style="font-size:18px;margin-bottom:2px;">NICE NG136</h3>
+            <div style="font-size:13.5px;color:#5a6784;margin-bottom:8px;">Hypertension in adults: diagnosis and management</div>
+            <div class="gl-info-row"><span class="k">Chunks indexed</span><span class="v">138</span></div>
+            <div class="gl-info-row"><span class="k">Embedding model</span><span class="v">all-MiniLM-L6-v2 (384-dim)</span></div>
+            <div class="gl-info-row"><span class="k">Vector database</span><span class="v">Chroma — connected</span></div>
+            <div class="gl-info-row"><span class="k">Last indexed</span><span class="v">Aug 12, 2026 · 14:32</span></div>
+          </div>
+          <div class="pipeline-mini">
+            <div class="pm-label">PDF → SECTIONS → CHUNKS → EMBEDDINGS → VECTOR SEARCH</div>
+            <div class="pm-row">
+              <div class="pm-node"><div class="pd"><svg class="icon" viewBox="0 0 24 24" width="16" height="16"><path d="M6 2h9l5 5v15H6z"/></svg></div><span>PDF</span></div>
+              <svg class="pm-arrow icon" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              <div class="pm-node"><div class="pd"><svg class="icon" viewBox="0 0 24 24" width="16" height="16"><path d="M4 6h16M4 12h16M4 18h10"/></svg></div><span>Sections</span></div>
+              <svg class="pm-arrow icon" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              <div class="pm-node"><div class="pd"><svg class="icon" viewBox="0 0 24 24" width="16" height="16"><rect x="4" y="5" width="7" height="7" rx="1"/><rect x="13" y="5" width="7" height="7" rx="1"/><rect x="8" y="14" width="7" height="7" rx="1"/></svg></div><span>Chunks</span></div>
+              <svg class="pm-arrow icon" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              <div class="pm-node"><div class="pd"><svg class="icon" viewBox="0 0 24 24" width="16" height="16"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></div><span>Embeddings</span></div>
+              <svg class="pm-arrow icon" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              <div class="pm-node"><div class="pd"><svg class="icon" viewBox="0 0 24 24" width="16" height="16"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></div><span>Search</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-surface sections-card">
+          <h4>Indexed sections</h4>
+          <div class="sec-row"><span class="sec-name">1.1 Measuring blood pressure</span><span class="sec-count">18 chunks</span></div>
+          <div class="sec-row"><span class="sec-name">1.2 Diagnosing hypertension</span><span class="sec-count">24 chunks</span></div>
+          <div class="sec-row"><span class="sec-name">1.3 Assessing cardiovascular risk and target organ damage</span><span class="sec-count">21 chunks</span></div>
+          <div class="sec-row"><span class="sec-name">1.4 Treating and monitoring hypertension</span><span class="sec-count">52 chunks</span></div>
+          <div class="sec-row"><span class="sec-name">1.5 Identifying who to refer for same-day specialist review</span><span class="sec-count">9 chunks</span></div>
+
+          <div class="advanced-toggle" id="adv-toggle" onclick="toggleAdvanced()">
+            <svg class="icon" viewBox="0 0 24 24" width="14" height="14"><path d="M6 9l6 6 6-6"/></svg>
+            Advanced details
+          </div>
+          <div class="advanced-panel" id="adv-panel">
+            <div class="adv-grid">
+              <div class="adv-item"><div class="k">Chunk size</div><div class="v">400 tokens</div></div>
+              <div class="adv-item"><div class="k">Chunk overlap</div><div class="v">50 tokens</div></div>
+              <div class="adv-item"><div class="k">Distance metric</div><div class="v">cosine</div></div>
+              <div class="adv-item"><div class="k">Refusal distance gate</div><div class="v">&gt; 0.65</div></div>
+              <div class="adv-item"><div class="k">Parser</div><div class="v">unstructured (fast)</div></div>
+              <div class="adv-item"><div class="k">Collection</div><div class="v">nice_hypertension</div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATUS SUBVIEW -->
+      <section class="subview" id="sub-status">
+        <div class="page-head">
+          <div><h2>System status</h2><div class="ph-sub">RAG pipeline health, checked continuously</div></div>
+        </div>
+        <div class="card-surface status-list">
+          <div class="status-row"><span class="status-dot"></span><div><div class="sr-title">Guideline indexed</div><div class="sr-sub">NICE NG136 · 138 chunks available for retrieval</div></div><span class="sr-time">just now</span></div>
+          <div class="status-row"><span class="status-dot"></span><div><div class="sr-title">Embedding model ready</div><div class="sr-sub">sentence-transformers/all-MiniLM-L6-v2 loaded</div></div><span class="sr-time">just now</span></div>
+          <div class="status-row"><span class="status-dot"></span><div><div class="sr-title">Vector database connected</div><div class="sr-sub">Chroma collection nice_hypertension</div></div><span class="sr-time">just now</span></div>
+          <div class="status-row"><span class="status-dot"></span><div><div class="sr-title">Retrieval engine ready</div><div class="sr-sub">Cosine similarity search, top-k = 5</div></div><span class="sr-time">just now</span></div>
+          <div class="status-row"><span class="status-dot"></span><div><div class="sr-title">Safety / refusal layer active</div><div class="sr-sub">Distance gate, red-flag, scope and dose checks enabled</div></div><span class="sr-time">just now</span></div>
+        </div>
+      </section>
+
+      <!-- ANALYTICS SUBVIEW -->
+      <section class="subview" id="sub-analytics">
+        <div class="page-head">
+          <div><h2>Analytics &amp; evaluation</h2><div class="ph-sub">Retrieval quality across all questions asked</div></div>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat-card"><div class="sc-label">Total questions</div><div class="sc-val">1,284</div><div class="sc-delta up">+64 this week</div></div>
+          <div class="stat-card"><div class="sc-label">Answered</div><div class="sc-val">892</div><div class="sc-delta up">69.5%</div></div>
+          <div class="stat-card"><div class="sc-label">Refused</div><div class="sc-val">392</div><div class="sc-delta warn">30.5%</div></div>
+          <div class="stat-card"><div class="sc-label">Avg. top similarity</div><div class="sc-val">71.4%</div><div class="sc-delta up">+2.1 pts</div></div>
+          <div class="stat-card"><div class="sc-label">Evidence-supported</div><div class="sc-val">86%</div><div class="sc-delta up">of answered</div></div>
+        </div>
+
+        <div class="chart-grid">
+          <div class="chart-card">
+            <h4>Questions over time</h4>
+            <div class="cc-sub">Last 8 weeks</div>
+            <svg class="trend-svg" viewBox="0 0 560 150" preserveAspectRatio="none">
+              <polyline points="0,110 70,95 140,100 210,70 280,80 350,50 420,58 490,30 560,38" fill="none" stroke="#4c86ff" stroke-width="2.5"/>
+              <polygon points="0,110 70,95 140,100 210,70 280,80 350,50 420,58 490,30 560,38 560,150 0,150" fill="url(#g1)" opacity="0.18"/>
+              <defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4c86ff"/><stop offset="100%" stop-color="#4c86ff" stop-opacity="0"/></linearGradient></defs>
+            </svg>
+          </div>
+          <div class="chart-card">
+            <h4>Answer vs. refusal rate</h4>
+            <div class="cc-sub">All-time</div>
+            <div class="donut-wrap">
+              <div class="donut"></div>
+              <div class="donut-legend">
+                <div class="dl-item"><span class="sw" style="background:var(--teal);"></span>Answered<small>69%</small></div>
+                <div class="dl-item"><span class="sw" style="background:var(--amber);"></span>Refused<small>31%</small></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-grid">
+          <div class="chart-card">
+            <h4>Similarity distribution</h4>
+            <div class="cc-sub">Top-1 retrieval score, by question</div>
+            <div class="hist">
+              <div class="hbar" style="height:22%;"><span>0–20</span></div>
+              <div class="hbar" style="height:34%;"><span>20–40</span></div>
+              <div class="hbar" style="height:48%;"><span>40–55</span></div>
+              <div class="hbar" style="height:70%;"><span>55–65</span></div>
+              <div class="hbar" style="height:100%;"><span>65–80</span></div>
+              <div class="hbar" style="height:62%;"><span>80–100</span></div>
+            </div>
+          </div>
+          <div class="chart-card">
+            <h4>Refusal reasons</h4>
+            <div class="cc-sub">Share of refused questions</div>
+            <div class="reason-bars">
+              <div class="reason-row"><div class="rr-top"><span class="rr-name">Weak retrieval</span><span class="rr-pct">46%</span></div><div class="rr-track"><span style="width:46%;"></span></div></div>
+              <div class="reason-row"><div class="rr-top"><span class="rr-name">Pediatric / adult scope mismatch</span><span class="rr-pct">24%</span></div><div class="rr-track"><span style="width:24%;"></span></div></div>
+              <div class="reason-row"><div class="rr-top"><span class="rr-name">Exact dose not supported</span><span class="rr-pct">19%</span></div><div class="rr-track"><span style="width:19%;"></span></div></div>
+              <div class="reason-row"><div class="rr-top"><span class="rr-name">Urgent clinical red flags</span><span class="rr-pct">11%</span></div><div class="rr-track"><span style="width:11%;"></span></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <h4>Retrieval evaluation</h4>
+          <div class="cc-sub">Chunking experiments logged against the 5-question benchmark</div>
+          <table class="eval-table">
+            <thead><tr><th>Chunk size / overlap</th><th>Avg. top similarity</th><th>Chunks produced</th><th></th></tr></thead>
+            <tbody>
+              <tr><td>15 tokens / 2</td><td class="mono-cell">64.2%</td><td class="mono-cell">612</td><td></td></tr>
+              <tr><td>26 tokens / 6</td><td class="mono-cell">68.7%</td><td class="mono-cell">401</td><td></td></tr>
+              <tr><td>35 tokens / 5</td><td class="mono-cell">73.1%</td><td class="mono-cell">298</td><td></td></tr>
+              <tr class="final"><td>400 tokens / 50 <span class="tag-final">selected</span></td><td class="mono-cell">71.4%</td><td class="mono-cell">138</td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   VIEW / NAV CONTROL
+   ============================================================ */
+function enterApp(sub){
+  document.getElementById('view-landing').classList.remove('active');
+  document.getElementById('view-app').classList.add('active');
+  window.scrollTo(0,0);
+  if(sub){ showSub(sub); }
+}
+function backToLanding(){
+  document.getElementById('view-app').classList.remove('active');
+  document.getElementById('view-landing').classList.add('active');
+  window.scrollTo(0,0);
+}
+function showSub(name){
+  document.querySelectorAll('.subview').forEach(function(el){ el.classList.remove('active'); });
+  document.getElementById('sub-'+name).classList.add('active');
+  document.querySelectorAll('.side-link[data-sub]').forEach(function(el){ el.classList.remove('active'); });
+  var link = document.querySelector('.side-link[data-sub="'+name+'"]');
+  if(link) link.classList.add('active');
+  window.scrollTo(0,0);
+}
+function newQuestion(){
+  showSub('ask');
+  resetAsk();
+  document.getElementById('ask-input').focus();
+}
+
+/* ============================================================
+   ASK / ANSWER FLOW
+   ============================================================ */
+function autogrow(el){
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 140) + 'px';
+}
+function handleAskKey(e){
+  if((e.metaKey || e.ctrlKey) && e.key === 'Enter'){ e.preventDefault(); submitQuestion(); }
+}
+function askChip(btn){
+  document.getElementById('ask-input').value = btn.textContent;
+  submitQuestion();
+}
+function resetAsk(){
+  document.getElementById('ask-input').value = '';
+  document.getElementById('idle-state').style.display = 'block';
+  document.getElementById('loading-block').classList.remove('show');
+  document.getElementById('result-wrap').classList.remove('show');
+}
+
+var recentQuestions = [];
+
+function renderRecent(){
+  var list = document.getElementById('recent-list');
+  var html = '<div class="side-label">Recent questions</div>';
+  recentQuestions.slice(0,5).forEach(function(r){
+    var dotClass = r.type === 'answer' ? 'ok' : (r.severity === 'red' ? 'stop' : 'warn');
+    html += '<div class="recent-item" onclick="rerun(\''+r.id+'\')"><div class="rq-text">'+r.query+'</div><div class="rq-meta"><span class="rq-dot '+dotClass+'"></span>'+(r.type==='answer'?'Answered':'Refused')+'</div></div>';
+  });
+  list.innerHTML = html;
+}
+function rerun(id){
+  var r = recentQuestions.find(function(x){ return x.id === id; });
+  if(r){ document.getElementById('ask-input').value = r.query; submitQuestion(true); }
+}
+
+var scenarioSeq = 0;
+
+function classify(q){
+  var t = q.toLowerCase();
+  if(t.indexOf('resistant hypertension') !== -1 || t.indexOf('spironolactone') !== -1){
+    return 'dose';
+  }
+  if(t.indexOf('pediatric') !== -1 || t.indexOf('child') !== -1 || t.indexOf('year-old') !== -1 || t.indexOf('infant') !== -1){
+    return 'pediatric';
+  }
+  if(t.indexOf('chest pain') !== -1 || t.indexOf('red flag') !== -1 || t.indexOf('emergency') !== -1 || t.indexOf('same-day') !== -1 && t.indexOf('referred') === -1 && t.indexOf('specialist') === -1){
+    // narrow — leave same-day/specialist to referral case below
+  }
+  if(t.indexOf('urgent') !== -1 || t.indexOf('red flag') !== -1){
+    return 'urgent';
+  }
+  if(t.indexOf('same-day') !== -1 || t.indexOf('specialist review') !== -1 || t.indexOf('referred') !== -1){
+    return 'referral';
+  }
+  if(t.indexOf('treatment step') !== -1 || t.indexOf('step 1') !== -1 || t.indexOf('steps') !== -1){
+    return 'steps';
+  }
+  if(t.indexOf('hypertension') !== -1 || t.indexOf('blood pressure') !== -1 || t.indexOf(' bp ') !== -1){
+    return 'diagnosis';
+  }
+  return 'weak';
+}
+
+var scenarios = {
+  referral: {
+    type:'answer', confidence:'sufficient',
+    answer: "For adults with <b>severe hypertension (clinic blood pressure of 180/120 mmHg or higher)</b> but no symptoms or signs indicating same-day referral, the guideline recommends investigating for target organ damage first. If target organ damage is identified, starting antihypertensive treatment immediately is reasonable, without waiting for ABPM or HBPM results. If no target organ damage is found, diagnosis should be confirmed by repeating clinic blood pressure within 7 days, or by ABPM/HBPM monitoring with a clinical review within 7 days.",
+    retrieval:{ topSim:'91.2%', chunks:5, section:'1.5', pages:'24–24' },
+    evidence:[
+      {section:'1.5 Identifying who to refer for same-day specialist review', pages:'24–24', score:91, text:'If a person has severe hypertension (clinic blood pressure of 180/120 mmHg or higher), but no symptoms or signs indicating same-day referral, carry out investigations for target organ damage.'},
+      {section:'1.5 Identifying who to refer for same-day specialist review', pages:'24–24', score:84, text:'If target organ damage is identified, consider starting antihypertensive drug treatment immediately, without waiting for the results of ABPM or HBPM.'},
+      {section:'1.4 Treating and monitoring hypertension', pages:'20–22', score:61, text:'Confirm diagnosis by repeating clinic blood pressure measurement within 7 days, or by monitoring with ABPM/HBPM and ensuring a clinical review within 7 days.'}
+    ]
+  },
+  steps: {
+    type:'answer', confidence:'sufficient',
+    answer: "Treatment follows a stepped approach. <b>Step 1</b> starts with an ACE inhibitor or ARB (or a calcium-channel blocker, depending on age and background), <b>step 2</b> combines an ACE inhibitor/ARB with a calcium-channel blocker or thiazide-like diuretic, and <b>step 3</b> combines all three drug classes. For <b>step 4</b> (resistant hypertension), the guideline discusses adding a further diuretic such as low-dose spironolactone, or an alpha- or beta-blocker if potassium is already raised — though it does not state an exact starting milligram dose in the retrieved text.",
+    retrieval:{ topSim:'78.5%', chunks:5, section:'1.4', pages:'20–23' },
+    evidence:[
+      {section:'1.4 Treating and monitoring hypertension', pages:'20–20', score:82, text:'Offer step 1 antihypertensive treatment with an ACE inhibitor or ARB, or a calcium-channel blocker depending on age, ethnicity and clinical factors.'},
+      {section:'1.4 Treating and monitoring hypertension', pages:'21–21', score:77, text:'For step 2, offer a combination of an ACE inhibitor or ARB, a calcium-channel blocker and a thiazide-like diuretic.'},
+      {section:'1.4 Treating and monitoring hypertension', pages:'22–23', score:69, text:'For step 4 (resistant hypertension), consider further diuretic therapy such as low-dose spironolactone, monitoring potassium and renal function.'}
+    ]
+  },
+  dose: {
+    type:'refusal', severity:'amber', reason:'exact_dose_not_supported',
+    reasons:[{icon:'alert', label:'Retrieved text discusses low-dose spironolactone for step 4 treatment, but does not state an exact starting dose in milligrams.'}],
+    body:"I couldn't find enough information in the indexed guideline to answer this confidently. The retrieved evidence supports low-dose spironolactone as a step 4 option for resistant hypertension, but it doesn't specify an exact starting dose.",
+    nextStep:"Ask what the guideline recommends for step 4 treatment of resistant hypertension, including any dosing information it does state — or confirm exact dosing with a clinician or the medicine's prescribing information.",
+    retrieval:{ topSim:'58.3%', chunks:5, section:'1.4', pages:'22–23' },
+    evidence:[
+      {section:'1.4 Treating and monitoring hypertension', pages:'22–23', score:58, text:'For step 4 treatment of resistant hypertension, consider further diuretic therapy, for example low-dose spironolactone, if blood potassium is 4.5 mmol/l or lower.'}
+    ]
+  },
+  pediatric: {
+    type:'refusal', severity:'amber', reason:'pediatric_scope_mismatch',
+    reasons:[{icon:'alert', label:'The indexed guideline (NICE NG136) covers adult hypertension. This question falls outside its supported age scope.'}],
+    body:"I couldn't find enough information in the indexed guideline to answer this confidently. NG136 is scoped to adults, so guidance on blood pressure targets for children isn't covered by this index.",
+    nextStep:"Ask about adult blood pressure targets instead, or consult a paediatric-specific guideline and a clinician for guidance on children.",
+    retrieval:{ topSim:'31.4%', chunks:5, section:'—', pages:'—' },
+    evidence:[
+      {section:'1.4 Treating and monitoring hypertension', pages:'20–21', score:31, text:'This guideline covers the diagnosis and management of hypertension in adults aged 18 and over.'}
+    ]
+  },
+  urgent: {
+    type:'refusal', severity:'red', reason:'urgent_clinical_red_flags',
+    reasons:[{icon:'alert', label:'This question describes symptoms that may indicate an urgent clinical situation rather than a routine guideline lookup.'}],
+    body:"This looks like it may describe an urgent clinical situation. I couldn't find enough information in the indexed guideline to answer this confidently, and a retrieval-based lookup isn't the right tool for symptoms that may need immediate attention.",
+    nextStep:"If this describes a current or worsening symptom, seek urgent medical care now rather than waiting on a guideline search.",
+    retrieval:{ topSim:'42.1%', chunks:5, section:'—', pages:'—' },
+    evidence:[
+      {section:'1.5 Identifying who to refer for same-day specialist review', pages:'24–24', score:42, text:'Referral for immediate specialist assessment is indicated for accelerated hypertension or symptoms suggesting phaeochromocytoma.'}
+    ]
+  },
+  diagnosis: {
+    type:'answer', confidence:'sufficient',
+    answer: "Hypertension is diagnosed using clinic blood pressure alongside ambulatory (ABPM) or home (HBPM) monitoring. A clinic reading of <b>140/90 mmHg or higher</b> should be confirmed with ABPM or HBPM before a diagnosis is made, since clinic readings alone can overestimate blood pressure.",
+    retrieval:{ topSim:'86.4%', chunks:5, section:'1.2', pages:'8–10' },
+    evidence:[
+      {section:'1.2 Diagnosing hypertension', pages:'8–9', score:86, text:'If clinic blood pressure is 140/90 mmHg or higher, offer ambulatory blood pressure monitoring (ABPM) to confirm the diagnosis.'},
+      {section:'1.2 Diagnosing hypertension', pages:'9–10', score:79, text:'If ABPM is declined or not tolerated, offer home blood pressure monitoring (HBPM) as an alternative.'}
+    ]
+  },
+  weak: {
+    type:'refusal', severity:'amber', reason:'weak_retrieval',
+    reasons:[{icon:'alert', label:'The top retrieved chunk fell below the similarity threshold required to answer confidently.'}],
+    body:"I couldn't find enough information in the indexed guideline to answer this confidently. The search did not return evidence closely matching this question.",
+    nextStep:"Try rephrasing the question using terms closer to the guideline's own language, or ask about one of the suggested topics.",
+    retrieval:{ topSim:'24.8%', chunks:5, section:'—', pages:'—' },
+    evidence:[]
+  }
+};
+
+function submitQuestion(skipAnim){
+  var input = document.getElementById('ask-input');
+  var q = input.value.trim();
+  if(!q) return;
+
+  document.getElementById('idle-state').style.display = 'none';
+  document.getElementById('result-wrap').classList.remove('show');
+  var lb = document.getElementById('loading-block');
+  lb.classList.add('show');
+  document.getElementById('ask-send').disabled = true;
+
+  ['lr-1','lr-2','lr-3'].forEach(function(id, i){
+    document.getElementById(id).classList.toggle('active', i===0);
+  });
+
+  var scenario = scenarios[classify(q)];
+  var delay = skipAnim ? 250 : 2200;
+
+  setTimeout(function(){ document.getElementById('lr-1').classList.remove('active'); document.getElementById('lr-2').classList.add('active'); }, delay*0.33);
+  setTimeout(function(){ document.getElementById('lr-2').classList.remove('active'); document.getElementById('lr-3').classList.add('active'); }, delay*0.7);
+
+  setTimeout(function(){
+    lb.classList.remove('show');
+    renderResult(q, scenario);
+    document.getElementById('result-wrap').classList.add('show');
+    document.getElementById('ask-send').disabled = false;
+
+    var id = 'q'+(scenarioSeq++);
+    recentQuestions.unshift({id:id, query:q, type:scenario.type, severity:scenario.severity});
+    renderRecent();
+  }, delay);
+}
+
+function renderResult(q, s){
+  var answerSlot = document.getElementById('answer-slot');
+  var evSlot = document.getElementById('evidence-slot');
+
+  if(s.type === 'answer'){
+    answerSlot.innerHTML =
+      '<div class="answer-card">'+
+        '<div class="q-line">Question<br><b>'+escapeHtml(q)+'</b></div>'+
+        '<div class="answer-body">'+
+          '<div class="resp-label"><span class="lbl">AI response</span><span class="confidence-pill sufficient"><svg class="icon" viewBox="0 0 24 24" width="12" height="12"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>Sufficient</span></div>'+
+          '<p class="answer-text">'+s.answer+'</p>'+
+        '</div>'+
+        '<div class="details-toggle" id="det-toggle" onclick="toggleDetails()">'+
+          '<svg class="icon" viewBox="0 0 24 24" width="14" height="14"><path d="M6 9l6 6 6-6"/></svg> Retrieval details'+
+        '</div>'+
+        '<div class="retrieval-panel" id="det-panel">'+
+          '<div class="retrieval-grid">'+
+            '<div class="rg-item"><div class="rg-val">'+s.retrieval.topSim+'</div><div class="rg-key">Top similarity</div></div>'+
+            '<div class="rg-item"><div class="rg-val">'+s.retrieval.chunks+'</div><div class="rg-key">Chunks retrieved</div></div>'+
+            '<div class="rg-item"><div class="rg-val">'+s.retrieval.section+'</div><div class="rg-key">Guideline section</div></div>'+
+            '<div class="rg-item"><div class="rg-val">'+s.retrieval.pages+'</div><div class="rg-key">Pages</div></div>'+
+          '</div>'+
+        '</div>'+
+      '</div>';
+  } else {
+    var severeClass = s.severity === 'red' ? ' severe' : '';
+    var reasonsHtml = s.reasons.map(function(r){
+      return '<li><svg class="icon" viewBox="0 0 24 24" width="14" height="14"><path d="M12 9v4M12 17h.01M10.3 3.86 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.86a2 2 0 0 0-3.4 0z"/></svg>'+r.label+'</li>';
+    }).join('');
+    answerSlot.innerHTML =
+      '<div class="refusal-card'+severeClass+'">'+
+        '<div class="q-line">Question<br><b>'+escapeHtml(q)+'</b></div>'+
+        '<div class="refusal-head">'+
+          '<div class="ric"><svg class="icon" viewBox="0 0 24 24" width="18" height="18"><path d="M12 9v4M12 17h.01M10.3 3.86 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.86a2 2 0 0 0-3.4 0z"/></svg></div>'+
+          '<div><h3>Evidence boundary reached</h3><p>'+s.body+'</p></div>'+
+        '</div>'+
+        '<div class="refusal-body">'+
+          '<div class="refusal-block"><div class="rb-title">Why</div><ul>'+reasonsHtml+'</ul></div>'+
+          '<div class="next-step-box"><div class="ns-label">Recommended next step</div><p>'+s.nextStep+'</p></div>'+
+        '</div>'+
+      '</div>';
+  }
+
+  var evHtml = '<h4>Evidence</h4><div class="ep-sub">Retrieved from indexed guideline</div>';
+  if(s.evidence.length === 0){
+    evHtml += '<div style="font-size:12.5px;color:#a6b0c4;padding:8px 2px;">No chunks cleared the similarity threshold for this question.</div>';
+  } else {
+    s.evidence.forEach(function(e, i){
+      evHtml +=
+        '<div class="ev-card" onclick="this.classList.toggle(\'expanded\')">'+
+          '<div class="ev-top"><span class="ev-section">'+e.section+'</span><span class="ev-page">p.'+e.pages+'</span></div>'+
+          '<div class="ev-score"><div class="ev-score-bar"><span style="width:'+e.score+'%;"></span></div><span class="ev-score-val">'+e.score+'%</span></div>'+
+          '<div class="ev-text">'+e.text+'</div>'+
+          '<div class="ev-expand-hint">Tap to expand</div>'+
+        '</div>';
+    });
+  }
+  evSlot.innerHTML = evHtml;
+}
+
+function toggleDetails(){
+  document.getElementById('det-toggle').classList.toggle('open');
+  document.getElementById('det-panel').classList.toggle('open');
+}
+function toggleAdvanced(){
+  document.getElementById('adv-toggle').classList.toggle('open');
+  document.getElementById('adv-panel').classList.toggle('open');
+}
+function escapeHtml(str){
+  var d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+</script>
+</body>
+</html>
